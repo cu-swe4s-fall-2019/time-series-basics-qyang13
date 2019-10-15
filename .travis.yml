@@ -8,6 +8,7 @@ before_install:
     - conda config --add channels r
     - conda create --yes -n test
     - conda activate test
+    - conda install -y numpy
     - conda install -y pycodestyle
     - conda install -y python-dateutil
     - conda install --yes python=3.6
