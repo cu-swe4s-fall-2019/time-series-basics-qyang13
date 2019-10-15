@@ -13,3 +13,6 @@ before_install:
     - conda install --yes python=3.6
 
 script:
+    - pycodestyle *.py
+    - python test_data_import.py
+    - bash test_data_import.sh
