@@ -6,6 +6,7 @@ from os.path import isfile, join
 import argparse
 import datetime
 
+
 class ImportData:
     '''
     Class for importing and parsing data for time series
