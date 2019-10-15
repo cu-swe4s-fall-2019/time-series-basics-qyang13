@@ -5,9 +5,6 @@ from os import listdir
 from os.path import isfile, join
 import argparse
 import datetime
-import math
-import numpy as np
-
 
 class ImportData:
     '''
@@ -90,39 +87,38 @@ def roundTimeArray(obj, res):
     note: you can create additional variables to help with this task
     which are not returned
     '''
-    time_lst = []
-    vals = []
-    num_times = len(obj._time)
-    type = obj._dedup
-    for i in range(num_times):
+    times = []
+    values = []
+    # Rounding time
+    for i in range(len(obj._time)):
         time = obj._time[i]
-        bad = datetime.timedelta(minutes=time.minute % res,
-                                 seconds=time.second)
-        time -= bad
-        if (bad >= datetime.timedelta(minutes=math.ceil(res/2))):
+        bad_entry = datetime.timedelta(minutes=time.minute % res,
+                                       seconds=time.second)
+        time -= bad_entry
+        if (bad_entry >= datetime.timedelta(minutes=res/2)):
             time += datetime.timedelta(minutes=res)
         obj._time[i] = time
 
-    if num_times > 0:
-        time_lst.append(obj._time[0])
-        sch = obj.linear_search_value(obj._time[0])  # search
-        if type == 0:
-            vals.append(sum(sch))  # summed
-        elif type == 1:
-            vals.append(sum(sch)/len(sch))  # averaged
+    if len(obj._time) > 0:
+        times.append(obj._time[0])
+        search = obj.linear_search_value(obj._time[0])
+        if obj._dedup == 0:
+            values.append(sum(search))
+        elif obj._dedup == 1:
+            values.append(sum(search)/len(search))
 
-    for i in range(1, num_times):  # check for duplicates
+    # Check for duplciates
+    for i in range(1, len(obj._time)):
         if obj._time[i] == obj._time[i - 1]:
             continue
         else:
-            time_lst.append(obj._time[i])
-            sch = obj.linear_search_value(obj._time[i])
-            if type == 0:
-                vals.append(sum(sch))  # summed
-            elif type == 1:
-                vals.append(sum(sch)/len(sch))  # averaged
-    output = zip(time_lst, vals)
-    return output
+            times.append(obj._time[i])
+            search = obj.linear_search_value(obj._time[i])
+            if obj._dedup == 0:
+                values.append(sum(search))
+            elif obj._dedup == 1:
+                values.append(sum(search)/len(search))
+    return zip(times, values)
 
 
 def printArray(data_list, annotation_list, base_name, key_file):
