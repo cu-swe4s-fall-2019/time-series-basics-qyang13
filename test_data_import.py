@@ -33,8 +33,8 @@ class Test_Data_Import(unittest.TestCase):
     def test_Init_replace_high_low(self):
         file = open('test.csv', 'w')
         file.write('time,value\n')
-        file.write('4/20/18 4:20,low\n')
-        file.write('4/21/18 4:21,high')
+        file.write('4/20/20 4:20,low\n')
+        file.write('4/21/20 4:20,high')
         file.close()
         instance = di.ImportData('test.csv')
         self.assertEqual(instance._value[0], 40.0)
@@ -55,23 +55,31 @@ class Test_Data_Import(unittest.TestCase):
         output = instance.linear_search_value(dt)
         self.assertEqual(output, [4.5])
 
+    def test_print_array_round_to_5(self):
+        data = []
+        for f in os.listdir('smallData'):
+            data.append(di.ImportData('smallData/'+f))
+        rdata_5 = []
+        for i in data:
+            rdata_5.append(di.roundTimeArray(i, 5))
+        self.assertNotEqual(di.printArray(rdata_5,
+                                          os.listdir('smallData'),
+                                          'out_5', 'meal_small.csv'), -1)
+        self.assertTrue(os.path.exists('out_5.csv'))
+        os.remove('out_5.csv')
 
-    #
-    # def test_print_array(self):
-    #     files = os.listdir('smallData')
-    #     data = []
-    #     for f in files:
-    #         data.append(di.ImportData('smallData/'+f))
-    #     data_5 = []
-    #     for instance in data:
-    #         data_5.append(di.roundTimeArray(instance, 5))
-    #
-    #     rtr = di.printArray(data_5, files, 'out_5', 'hr_small.csv')
-    #     self.assertNotEqual(rtr, -1)
-    #     self.assertTrue(os.path.exists('out_5.csv'))
-    #     os.remove('out_5.csv')
-    #
-
+    def test_print_array_round_to_15(self):
+        data = []
+        for f in os.listdir('smallData'):
+            data.append(di.ImportData('smallData/'+f))
+        rdata_15 = []
+        for i in data:
+            rdata_15.append(di.roundTimeArray(i, 15))
+        self.assertNotEqual(di.printArray(rdata_15,
+                                          os.listdir('smallData'),
+                                          'out_15', 'meal_small.csv'), -1)
+        self.assertTrue(os.path.exists('out_15.csv'))
+        os.remove('out_15.csv')
 
 
 if __name__ == '__main__':
